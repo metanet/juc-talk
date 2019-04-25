@@ -1,0 +1,19 @@
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %level - %msg%n"/>-->
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%c{1.}] %level - %msg%n"/>
+        </Console>
+
+        <File name="File" fileName="../log.txt" append="true" immediateFlush="true">
+            <!--<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %level - %msg%n"/>-->
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%c{1.}] %level - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <!--<AppenderRef ref="Console"/>-->
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+</Configuration>

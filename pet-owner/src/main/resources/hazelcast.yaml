@@ -1,0 +1,29 @@
+hazelcast:
+  group:
+    name: juc-talk
+
+  properties:
+    hazelcast.logging.type: slf4j
+
+  network:
+    port:
+      auto-increment: true
+      port-count: 100
+      port: 5701
+    outbound-ports:
+      # Allowed port range when connecting to other nodes.
+      # 0 or * means use system provided port.
+      - 0
+    join:
+      multicast:
+        enabled: false
+      tcp-ip:
+        enabled: true
+        interface: 127.0.0.1
+        member-list:
+          - 127.0.0.1
+
+  cp-subsystem:
+    cp-member-count: 3
+    session-time-to-live-seconds: 15
+    session-heartbeat-interval-seconds: 1
