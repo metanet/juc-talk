@@ -34,7 +34,6 @@
         <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
         <maven.dependency.plugin.version>2.10</maven.dependency.plugin.version>
         <maven.checkstyle.plugin.version>3.0.0</maven.checkstyle.plugin.version>
-
     </properties>
 	
 	<modules>

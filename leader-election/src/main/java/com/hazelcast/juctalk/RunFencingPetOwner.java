@@ -10,14 +10,12 @@ import com.hazelcast.cp.CPSubsystem;
 import com.hazelcast.cp.lock.FencedLock;
 import com.hazelcast.logging.ILogger;
 
-import java.util.Random;
-
-import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
-import static com.hazelcast.juctalk.RunElectedPetOwner.LOCK_NAME;
-import static com.hazelcast.juctalk.PrimitiveNames.PHOTO_REF_NAME;
+import static com.hazelcast.juctalk.Photo.getRandomPhotoFileName;
 import static com.hazelcast.juctalk.PrimitiveNames.NOTIFIER_LATCH_NAME;
-import static com.hazelcast.juctalk.RunPetOwner.getPet;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static com.hazelcast.juctalk.PrimitiveNames.PHOTO_REF_NAME;
+import static com.hazelcast.juctalk.RunElectedPetOwner.LOCK_NAME;
+import static com.hazelcast.juctalk.RunPetOwner.parsePet;
+import static com.hazelcast.juctalk.util.RandomUtil.randomSleep;
 
 /**
  * This class starts a pet owner. You can start multiple pet owners to achieve
@@ -42,7 +40,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 public class RunFencingPetOwner {
 
     public static void main(String[] args) {
-        String pet = getPet(args);
+        String pet = parsePet(args);
 
         ClientConfig config = new YamlClientConfigBuilder().build();
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
@@ -62,7 +60,6 @@ public class RunFencingPetOwner {
                     + " and became the leader!");
 
             notifier.trySetCount(1);
-            Random random = new Random();
 
             while (true) {
                 Photo currentPhoto = photoRef.get();
@@ -79,9 +76,7 @@ public class RunFencingPetOwner {
                     nextVersion = currentPhoto.getId() + 1;
                 }
 
-                int petIndex = 1 + random.nextInt(15);
-                String fileName = pet + petIndex + ".png";
-                Photo newPhoto = new Photo(fence, nextVersion, fileName);
+                Photo newPhoto = new Photo(fence, nextVersion, getRandomPhotoFileName(pet));
 
                 if (photoRef.compareAndSet(currentPhoto, newPhoto)) {
                     logger.info("PetOwner<" + address + "> published " + newPhoto);
@@ -90,7 +85,7 @@ public class RunFencingPetOwner {
                     notifier.trySetCount(1);
                 }
 
-                sleepUninterruptibly(2000 + random.nextInt(1000), MILLISECONDS);
+                randomSleep();
             }
         } finally {
             lock.unlock();

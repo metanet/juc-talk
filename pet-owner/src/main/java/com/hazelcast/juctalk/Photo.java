@@ -7,6 +7,7 @@ import com.hazelcast.nio.serialization.DataSerializable;
 import java.io.IOException;
 import java.util.Comparator;
 
+import static com.hazelcast.juctalk.util.RandomUtil.randomInt;
 import static java.util.Comparator.comparingInt;
 import static java.util.Comparator.nullsFirst;
 
@@ -76,4 +77,9 @@ public class Photo implements DataSerializable {
     public String toString() {
         return "Photo{" + "fence=" + fence + ", id=" + id + ", fileName='" + fileName + '\'' + '}';
     }
+
+    public static String getRandomPhotoFileName(String pet) {
+        return pet + (1 + randomInt(15)) + ".png";
+    }
+
 }

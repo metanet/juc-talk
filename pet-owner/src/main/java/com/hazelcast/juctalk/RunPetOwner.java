@@ -9,12 +9,10 @@ import com.hazelcast.core.ICountDownLatch;
 import com.hazelcast.cp.CPSubsystem;
 import com.hazelcast.logging.ILogger;
 
-import java.util.Random;
-
-import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static com.hazelcast.juctalk.Photo.getRandomPhotoFileName;
 import static com.hazelcast.juctalk.PrimitiveNames.NOTIFIER_LATCH_NAME;
 import static com.hazelcast.juctalk.PrimitiveNames.PHOTO_REF_NAME;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static com.hazelcast.juctalk.util.RandomUtil.randomSleep;
 
 /**
  * This class starts a pet owner.
@@ -27,7 +25,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 public class RunPetOwner {
 
     public static void main(String[] args) {
-        String pet = getPet(args);
+        String pet = parsePet(args);
 
         ClientConfig config = new YamlClientConfigBuilder().build();
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
@@ -40,13 +38,11 @@ public class RunPetOwner {
         ICountDownLatch notifier = cpSubsystem.getCountDownLatch(NOTIFIER_LATCH_NAME);
 
         notifier.trySetCount(1);
-        Random random = new Random();
 
         while (true) {
             Photo currentPhoto = photoRef.get();
             int nextVersion = currentPhoto != null ? currentPhoto.getId() + 1 : 1;
-            int petIndex = 1 + random.nextInt(15);
-            Photo newPhoto = new Photo(nextVersion, pet + petIndex + ".png");
+            Photo newPhoto = new Photo(nextVersion, getRandomPhotoFileName(pet));
             photoRef.set(newPhoto);
 
             logger.info("PetOwner<" + address + "> published " + newPhoto);
@@ -54,11 +50,11 @@ public class RunPetOwner {
             notifier.countDown();
             notifier.trySetCount(1);
 
-            sleepUninterruptibly(2000 + random.nextInt(1000), MILLISECONDS);
+            randomSleep();
         }
     }
 
-    public static String getPet(String[] args) {
+    public static String parsePet(String[] args) {
         if (args.length != 1) {
             throw new IllegalArgumentException("You must provide a single argument: cat|dog");
         }
@@ -67,6 +63,7 @@ public class RunPetOwner {
         if (!(pet.equals("cat") || pet.equals("dog"))) {
             throw new IllegalArgumentException("You must provide a single argument: cat|dog");
         }
+
         return pet;
     }
 
