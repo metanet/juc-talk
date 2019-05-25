@@ -75,7 +75,9 @@ public class Photo implements DataSerializable {
 
     @Override
     public String toString() {
-        return "Photo{" + "fence=" + fence + ", id=" + id + ", fileName='" + fileName + '\'' + '}';
+        return (fence == 0)
+                ? "Photo{" + "id=" + id + ", fileName='" + fileName + '\'' + '}'
+                : "Photo{" + "fence=" + fence + ", id=" + id + ", fileName='" + fileName + '\'' + '}';
     }
 
     public static String getRandomPhotoFileName(String pet) {

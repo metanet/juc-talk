@@ -28,10 +28,10 @@ public class RunPetOwner {
         String pet = parsePet(args);
 
         ClientConfig config = new YamlClientConfigBuilder().build();
+        config.setInstanceName(toEmoji(pet));
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
 
-        ILogger logger = client.getLoggingService().getLogger(RunPetOwner.class);
-        String address = client.getLocalEndpoint().getSocketAddress().toString();
+        ILogger logger = client.getLoggingService().getLogger("PetOwner");
         CPSubsystem cpSubsystem = client.getCPSubsystem();
 
         IAtomicReference<Photo> photoRef = cpSubsystem.getAtomicReference(PHOTO_REF_NAME);
@@ -45,7 +45,7 @@ public class RunPetOwner {
             Photo newPhoto = new Photo(nextVersion, getRandomPhotoFileName(pet));
             photoRef.set(newPhoto);
 
-            logger.info("PetOwner<" + address + "> published " + newPhoto);
+            logger.info("posted new " + newPhoto);
 
             notifier.countDown();
             notifier.trySetCount(1);
@@ -65,6 +65,17 @@ public class RunPetOwner {
         }
 
         return pet;
+    }
+
+    public static String toEmoji(String pet) {
+        switch (pet) {
+            case "cat":
+                return "❤️  \uD83D\uDC31";
+            case "dog":
+                return "❤️  \uD83D\uDC36";
+            default:
+                throw new IllegalArgumentException("cannot convert " + pet + " to emoji!");
+        }
     }
 
 }

@@ -14,6 +14,7 @@ import static com.hazelcast.juctalk.Photo.getRandomPhotoFileName;
 import static com.hazelcast.juctalk.PrimitiveNames.NOTIFIER_LATCH_NAME;
 import static com.hazelcast.juctalk.PrimitiveNames.PHOTO_REF_NAME;
 import static com.hazelcast.juctalk.RunPetOwner.parsePet;
+import static com.hazelcast.juctalk.RunPetOwner.toEmoji;
 import static com.hazelcast.juctalk.util.RandomUtil.randomSleep;
 
 /**
@@ -38,10 +39,10 @@ public class RunElectedPetOwner {
         String pet = parsePet(args);
 
         ClientConfig config = new YamlClientConfigBuilder().build();
+        config.setInstanceName(toEmoji(pet));
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
 
-        ILogger logger = client.getLoggingService().getLogger(RunElectedPetOwner.class);
-        String address = client.getLocalEndpoint().getSocketAddress().toString();
+        ILogger logger = client.getLoggingService().getLogger("PetOwner");
         CPSubsystem cpSubsystem = client.getCPSubsystem();
 
         FencedLock lock = cpSubsystem.getLock(LOCK_NAME);
@@ -49,9 +50,9 @@ public class RunElectedPetOwner {
         ICountDownLatch notifier = cpSubsystem.getCountDownLatch(NOTIFIER_LATCH_NAME);
 
         try {
-            logger.info("PetOwner<" + address + "> is attempting to acquire the lock!");
+            logger.info("attempting to acquire the lock!");
             lock.lock();
-            logger.info("PetOwner<" + address + "> acquired the lock and became the leader!");
+            logger.info("acquired the lock and became the leader!");
 
             notifier.trySetCount(1);
 
@@ -59,9 +60,14 @@ public class RunElectedPetOwner {
                 Photo currentPhoto = photoRef.get();
                 int nextVersion = currentPhoto != null ? currentPhoto.getId() + 1 : 1;
                 Photo newPhoto = new Photo(nextVersion, getRandomPhotoFileName(pet));
-                photoRef.compareAndSet(currentPhoto, newPhoto);
 
-                logger.info("PetOwner<" + address + "> published " + newPhoto);
+                // even if we check the lock ownership here and get into the if block,
+                // we might fall into a GC pause and lose the lock before posting the new photo
+                // if (lock.isLockedByCurrentThread()) {
+                    photoRef.compareAndSet(currentPhoto, newPhoto);
+                // }
+
+                logger.info("posted new " + newPhoto);
 
                 notifier.countDown();
                 notifier.trySetCount(1);

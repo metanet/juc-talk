@@ -1,6 +1,6 @@
 hazelcast:
   group:
-    name: juc-talk
+    name: rigadevdays
 
   properties:
     hazelcast.logging.type: slf4j

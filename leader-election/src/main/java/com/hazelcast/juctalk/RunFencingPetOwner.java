@@ -15,6 +15,7 @@ import static com.hazelcast.juctalk.PrimitiveNames.NOTIFIER_LATCH_NAME;
 import static com.hazelcast.juctalk.PrimitiveNames.PHOTO_REF_NAME;
 import static com.hazelcast.juctalk.RunElectedPetOwner.LOCK_NAME;
 import static com.hazelcast.juctalk.RunPetOwner.parsePet;
+import static com.hazelcast.juctalk.RunPetOwner.toEmoji;
 import static com.hazelcast.juctalk.util.RandomUtil.randomSleep;
 
 /**
@@ -43,10 +44,10 @@ public class RunFencingPetOwner {
         String pet = parsePet(args);
 
         ClientConfig config = new YamlClientConfigBuilder().build();
+        config.setInstanceName(toEmoji(pet));
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
 
-        ILogger logger = client.getLoggingService().getLogger(RunFencingPetOwner.class);
-        String address = client.getLocalEndpoint().getSocketAddress().toString();
+        ILogger logger = client.getLoggingService().getLogger("PetOwner");
         CPSubsystem cpSubsystem = client.getCPSubsystem();
 
         FencedLock lock = cpSubsystem.getLock(LOCK_NAME);
@@ -54,10 +55,9 @@ public class RunFencingPetOwner {
         ICountDownLatch notifier = cpSubsystem.getCountDownLatch(NOTIFIER_LATCH_NAME);
 
         try {
-            logger.info("PetOwner<" + address + "> is attempting to acquire the lock!");
+            logger.info("attempting to acquire the lock!");
             long fence = lock.lockAndGetFence();
-            logger.info("PetOwner<" + address + "> acquired the lock with fence: " + fence
-                    + " and became the leader!");
+            logger.info("acquired the lock with fence: " + fence + " and became the leader!");
 
             notifier.trySetCount(1);
 
@@ -67,8 +67,7 @@ public class RunFencingPetOwner {
                 int nextVersion = 0;
                 if (currentPhoto != null) {
                     if (currentPhoto.getFence() > fence) {
-                        logger.severe("PetOwner<" + address + "> lost ownership of the lock! Current: "
-                                + currentPhoto + ", my fencing token: " + fence);
+                        logger.severe("lost the leadership! my token: " + fence + ", current: " + currentPhoto);
                         client.getLifecycleService().terminate();
                         return;
                     }
@@ -79,7 +78,7 @@ public class RunFencingPetOwner {
                 Photo newPhoto = new Photo(fence, nextVersion, getRandomPhotoFileName(pet));
 
                 if (photoRef.compareAndSet(currentPhoto, newPhoto)) {
-                    logger.info("PetOwner<" + address + "> published " + newPhoto);
+                    logger.info("posted new " + newPhoto);
 
                     notifier.countDown();
                     notifier.trySetCount(1);

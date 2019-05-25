@@ -17,12 +17,13 @@ public class RunServer {
     public static void main(String[] args) throws InterruptedException {
         Config config = new YamlConfigBuilder().build();
         HazelcastInstance instance = Hazelcast.newHazelcastInstance(config);
+
         instance.getCPSubsystem()
                 .getCPSubsystemManagementService()
                 .awaitUntilDiscoveryCompleted(2, MINUTES);
 
         ILogger logger = instance.getLoggingService().getLogger(RunServer.class);
-        logger.info(instance.getLocalEndpoint().getSocketAddress() + " is ready!");
+        logger.info("ready to go!");
     }
 
 }

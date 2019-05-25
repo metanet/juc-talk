@@ -49,16 +49,16 @@ public class PetService {
         while (true) {
             try {
                 if (!notifier.await(5, SECONDS)) {
-                    logger.info("PetService<" + address + "> received no notification...");
+                    logger.info("no notification on the latch...");
                 }
             } catch (InterruptedException e) {
-                logger.severe("PetService<" + address + "> notifier latch await interrupted.");
+                logger.severe("notifier latch await interrupted.");
                 return;
             }
 
             Photo newPhoto = photoRef.get();
             if (PHOTO_COMPARATOR.compare(newPhoto, currentPhoto) > 0) {
-                logger.info("PetService<" + address + "> fetched " + newPhoto);
+                logger.info("fetched " + newPhoto);
                 currentPhoto = newPhoto;
             } else {
                 sleepUninterruptibly(100, MILLISECONDS);

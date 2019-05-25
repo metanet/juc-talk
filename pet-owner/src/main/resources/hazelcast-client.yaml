@@ -1,9 +1,7 @@
 hazelcast-client:
 
   group:
-    name: juc-talk
-
-  instance-name: juc-talk-client
+    name: rigadevdays
 
   properties:
     hazelcast.logging.type: slf4j
@@ -12,8 +10,6 @@ hazelcast-client:
   network:
     cluster-members:
       - 127.0.0.1:5701
-      - 127.0.0.1:5702
-      - 127.0.0.1:5703
     outbound-ports:
       - 6701-6710
     smart-routing: true

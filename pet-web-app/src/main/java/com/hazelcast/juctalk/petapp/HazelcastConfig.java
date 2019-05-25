@@ -13,6 +13,7 @@ public class HazelcastConfig {
     @Bean
     public HazelcastInstance hazelcastClient() {
         ClientConfig config = new YamlClientConfigBuilder().build();
+        config.setInstanceName("     ");
         return HazelcastClient.newHazelcastClient(config);
     }
 
