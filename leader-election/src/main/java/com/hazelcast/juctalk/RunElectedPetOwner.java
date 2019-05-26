@@ -61,11 +61,7 @@ public class RunElectedPetOwner {
                 int nextVersion = currentPhoto != null ? currentPhoto.getId() + 1 : 1;
                 Photo newPhoto = new Photo(nextVersion, getRandomPhotoFileName(pet));
 
-                // even if we check the lock ownership here and get into the if block,
-                // we might fall into a GC pause and lose the lock before posting the new photo
-                // if (lock.isLockedByCurrentThread()) {
-                    photoRef.compareAndSet(currentPhoto, newPhoto);
-                // }
+                photoRef.set(currentPhoto);
 
                 logger.info("posted new " + newPhoto);
 
