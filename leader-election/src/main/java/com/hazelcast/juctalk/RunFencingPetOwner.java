@@ -20,18 +20,18 @@ import static com.hazelcast.juctalk.util.RandomUtil.randomSleep;
 
 /**
  * This class starts a pet owner. You can start multiple pet owners to achieve
- * fault tolerance. Once a Master node started, it first attempts to acquire
+ * redundancy. Once a Master node started, it first attempts to acquire
  * a {@link FencedLock} denoted via {@link RunElectedPetOwner#LOCK_NAME}.
  * When multiple pet owners are started, the Master node which acquired
  * the lock becomes the leader. All other pet owners wait on the
  * {@link FencedLock#lockAndGetFence()} ()} call until the lock-acquired pet
  * owner releases the lock or fails.
  * <p>
- * An elected pet owner periodically creates a new {@link Photo} and publishes
- * it through a linearizable {@link IAtomicReference} instance. It also counts
+ * An elected pet owner periodically creates a new {@link Photo} and posts it
+ * through a linearizable {@link IAtomicReference} instance. It also counts
  * down the {@link PrimitiveNames#NOTIFIER_LATCH_NAME} latch to notify
  * the parties that are reading published {@link Photo} objects. Last,
- * the leader-elected pet owner also puts its fencing token into the published
+ * the leader-elected pet owner also puts its fencing token into the
  * {@link Photo} objects. Fencing tokens are used for fencing-off stale leaders
  * when lock ownership of a previously elected pet owner is prematurely
  * cancelled but that node is still alive. A pet owner backs-off when it

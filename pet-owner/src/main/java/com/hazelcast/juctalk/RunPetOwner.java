@@ -17,9 +17,9 @@ import static com.hazelcast.juctalk.util.RandomUtil.randomSleep;
 /**
  * This class starts a pet owner.
  * <p>
- * A pet owner periodically creates a pet {@link Photo} and publishes it
- * through a linearizable {@link IAtomicReference} instance. It also counts
- * down the {@link PrimitiveNames#NOTIFIER_LATCH_NAME} latch to notify
+ * A pet owner periodically creates a pet {@link Photo} and posts it through
+ * a linearizable {@link IAtomicReference} instance. It also counts down
+ * the {@link PrimitiveNames#NOTIFIER_LATCH_NAME} latch to notify
  * the parties that are reading published {@link Photo} objects.
  */
 public class RunPetOwner {

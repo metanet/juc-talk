@@ -12,19 +12,19 @@ import static java.util.Comparator.comparingInt;
 import static java.util.Comparator.nullsFirst;
 
 /**
- * Represents photos published by pet owners
+ * Represents photos posted by pet owners
  */
 public class Photo implements DataSerializable {
 
     public static final Comparator<Photo> PHOTO_COMPARATOR = nullsFirst(comparingInt(Photo::getId));
 
     /**
-     * The Pet owner that publishes this photo
+     * Denotes the Pet owner that posts this photo.
      */
     private long fence;
 
     /**
-     * The id of this photo. Incremented each time a new photo is published.
+     * Incremented each time a new photo is posted.
      */
     private int id;
 

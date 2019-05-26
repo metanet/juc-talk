@@ -38,7 +38,6 @@ public class PetService {
 
     private void fetchNewPetPhoto() {
         ILogger logger = client.getLoggingService().getLogger(PetService.class);
-        String address = client.getLocalEndpoint().getSocketAddress().toString();
         CPSubsystem cpSubsystem = client.getCPSubsystem();
 
         IAtomicReference<Photo> photoRef = cpSubsystem.getAtomicReference(PHOTO_REF_NAME);

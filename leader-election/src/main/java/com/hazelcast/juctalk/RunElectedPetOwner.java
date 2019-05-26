@@ -19,15 +19,15 @@ import static com.hazelcast.juctalk.util.RandomUtil.randomSleep;
 
 /**
  * This class starts a pet owner. You can start multiple pet owners to achieve
- * fault tolerance. Once a pet owner is started, it first attempts to acquire
+ * redundancy. Once a pet owner is started, it first attempts to acquire
  * a {@link FencedLock} denoted via {@link RunElectedPetOwner#LOCK_NAME}.
  * When multiple pet owners are started, the pet owner which acquired
  * the lock becomes the leader. All other pet owners wait on the
  * {@link FencedLock#lock()} call until the lock-acquired pet owner releases
  * the lock or fails.
  * <p>
- * An elected pet owner periodically creates a new {@link Photo} and publishes
- * it through a linearizable {@link IAtomicReference} instance. It also counts
+ * An elected pet owner periodically creates a new {@link Photo} and posts it
+ * through a linearizable {@link IAtomicReference} instance. It also counts
  * down the {@link PrimitiveNames#NOTIFIER_LATCH_NAME} latch to notify
  * the parties that are reading published {@link Photo} objects.
  */
