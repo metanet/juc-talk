@@ -61,7 +61,7 @@ public class RunElectedPetOwner {
                 int nextVersion = currentPhoto != null ? currentPhoto.getId() + 1 : 1;
                 Photo newPhoto = new Photo(nextVersion, getRandomPhotoFileName(pet));
 
-                photoRef.set(currentPhoto);
+                photoRef.set(newPhoto);
 
                 logger.info("posted new " + newPhoto);
 
