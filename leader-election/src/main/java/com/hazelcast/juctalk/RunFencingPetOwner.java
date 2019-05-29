@@ -10,6 +10,7 @@ import com.hazelcast.cp.CPSubsystem;
 import com.hazelcast.cp.lock.FencedLock;
 import com.hazelcast.logging.ILogger;
 
+import static com.hazelcast.juctalk.Photo.getNextId;
 import static com.hazelcast.juctalk.Photo.getRandomPhotoFileName;
 import static com.hazelcast.juctalk.PrimitiveNames.NOTIFIER_LATCH_NAME;
 import static com.hazelcast.juctalk.PrimitiveNames.PHOTO_REF_NAME;
@@ -64,7 +65,7 @@ public class RunFencingPetOwner {
             while (true) {
                 Photo currentPhoto = photoRef.get();
 
-                int nextVersion = 0;
+                int nextId = 0;
                 if (currentPhoto != null) {
                     if (currentPhoto.getFence() > fence) {
                         logger.severe("lost the leadership! my token: " + fence + ", current: " + currentPhoto);
@@ -72,10 +73,10 @@ public class RunFencingPetOwner {
                         return;
                     }
 
-                    nextVersion = currentPhoto.getId() + 1;
+                    nextId = getNextId(currentPhoto);
                 }
 
-                Photo newPhoto = new Photo(fence, nextVersion, getRandomPhotoFileName(pet));
+                Photo newPhoto = new Photo(fence, nextId, getRandomPhotoFileName(pet));
 
                 if (photoRef.compareAndSet(currentPhoto, newPhoto)) {
                     logger.info("posted new " + newPhoto);

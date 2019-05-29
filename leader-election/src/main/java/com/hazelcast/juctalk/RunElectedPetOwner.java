@@ -10,6 +10,7 @@ import com.hazelcast.cp.CPSubsystem;
 import com.hazelcast.cp.lock.FencedLock;
 import com.hazelcast.logging.ILogger;
 
+import static com.hazelcast.juctalk.Photo.getNextId;
 import static com.hazelcast.juctalk.Photo.getRandomPhotoFileName;
 import static com.hazelcast.juctalk.PrimitiveNames.NOTIFIER_LATCH_NAME;
 import static com.hazelcast.juctalk.PrimitiveNames.PHOTO_REF_NAME;
@@ -58,8 +59,7 @@ public class RunElectedPetOwner {
 
             while (true) {
                 Photo currentPhoto = photoRef.get();
-                int nextVersion = currentPhoto != null ? currentPhoto.getId() + 1 : 1;
-                Photo newPhoto = new Photo(nextVersion, getRandomPhotoFileName(pet));
+                Photo newPhoto = new Photo(getNextId(currentPhoto), getRandomPhotoFileName(pet));
 
                 photoRef.set(newPhoto);
 

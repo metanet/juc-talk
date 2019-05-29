@@ -80,6 +80,10 @@ public class Photo implements DataSerializable {
                 : "Photo{" + "fence=" + fence + ", id=" + id + ", fileName='" + fileName + '\'' + '}';
     }
 
+    public static int getNextId(Photo current) {
+        return current != null ? current.getId() + 1 : 1;
+    }
+
     public static String getRandomPhotoFileName(String pet) {
         return pet + (1 + randomInt(15)) + ".png";
     }
