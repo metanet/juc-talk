@@ -1,6 +1,6 @@
 hazelcast:
   group:
-    name: rigadevdays
+    name: imc-summit-london
 
   properties:
     hazelcast.logging.type: slf4j
