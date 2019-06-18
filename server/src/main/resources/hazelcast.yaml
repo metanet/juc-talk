@@ -1,6 +1,6 @@
 hazelcast:
   group:
-    name: imc-summit-london
+    name: devoxx-pl
 
   properties:
     hazelcast.logging.type: slf4j
