@@ -1,7 +1,7 @@
 hazelcast-client:
 
   group:
-    name: devoxx-pl
+    name: bed-con
 
   properties:
     hazelcast.logging.type: slf4j
