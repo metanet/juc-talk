@@ -51,9 +51,9 @@ public class RunFencingPetOwner {
         ILogger logger = client.getLoggingService().getLogger("PetOwner");
         CPSubsystem cpSubsystem = client.getCPSubsystem();
 
-        FencedLock lock = cpSubsystem.getLock(LOCK_NAME);
         IAtomicReference<Photo> photoRef = cpSubsystem.getAtomicReference(PHOTO_REF_NAME);
         ICountDownLatch notifier = cpSubsystem.getCountDownLatch(NOTIFIER_LATCH_NAME);
+        FencedLock lock = cpSubsystem.getLock(LOCK_NAME);
 
         try {
             logger.info("attempting to acquire the lock!");

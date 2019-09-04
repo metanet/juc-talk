@@ -34,7 +34,7 @@ import static com.hazelcast.juctalk.util.RandomUtil.randomSleep;
  */
 public class RunElectedPetOwner {
 
-    public static final String LOCK_NAME = "lock";
+    static final String LOCK_NAME = "lock";
 
     public static void main(String[] args) {
         String pet = parsePet(args);
@@ -46,9 +46,9 @@ public class RunElectedPetOwner {
         ILogger logger = client.getLoggingService().getLogger("PetOwner");
         CPSubsystem cpSubsystem = client.getCPSubsystem();
 
-        FencedLock lock = cpSubsystem.getLock(LOCK_NAME);
         IAtomicReference<Photo> photoRef = cpSubsystem.getAtomicReference(PHOTO_REF_NAME);
         ICountDownLatch notifier = cpSubsystem.getCountDownLatch(NOTIFIER_LATCH_NAME);
+        FencedLock lock = cpSubsystem.getLock(LOCK_NAME);
 
         try {
             logger.info("attempting to acquire the lock!");
