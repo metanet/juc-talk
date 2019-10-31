@@ -48,7 +48,7 @@ public class PetService {
         while (true) {
             try {
                 if (!notifier.await(5, SECONDS)) {
-                    logger.info("no notification on the latch...");
+                    logger.fine("no notification on the latch...");
                 }
             } catch (InterruptedException e) {
                 logger.severe("notifier latch await interrupted.");

@@ -1,9 +1,11 @@
 hazelcast:
   group:
-    name: bed-con
+    name: devoxx-ua
 
   properties:
     hazelcast.logging.type: slf4j
+    hazelcast.rest.enabled: true
+    hazelcast.http.healthcheck.enabled: true
 
   network:
     port:
@@ -27,3 +29,9 @@ hazelcast:
     cp-member-count: 3
     session-time-to-live-seconds: 15
     session-heartbeat-interval-seconds: 1
+
+  management-center:
+    enabled: true
+    scripting-enabled: false
+    update-interval: 1
+    url: http://localhost:8081/mancenter

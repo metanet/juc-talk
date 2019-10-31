@@ -1,7 +1,6 @@
 hazelcast-client:
-
   group:
-    name: bed-con
+    name: devoxx-ua
 
   properties:
     hazelcast.logging.type: slf4j
@@ -13,4 +12,4 @@ hazelcast-client:
     outbound-ports:
       - 6701-6710
     smart-routing: true
-    redo-operation: false
+    redo-operation: true
