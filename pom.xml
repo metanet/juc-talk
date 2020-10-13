@@ -27,7 +27,7 @@
         <slf4j.api.version>1.7.25</slf4j.api.version>
         <log4j.version>2.13.3</log4j.version>
 
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
 
         <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
         <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
