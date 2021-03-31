@@ -23,7 +23,7 @@
 
         <hazelcast.version>3.12.3</hazelcast.version>
 
-        <guava.version>27.1-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <slf4j.api.version>1.7.25</slf4j.api.version>
         <log4j.version>2.13.3</log4j.version>
 
