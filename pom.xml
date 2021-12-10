@@ -25,7 +25,7 @@
 
         <guava.version>27.1-jre</guava.version>
         <slf4j.api.version>1.7.25</slf4j.api.version>
-        <log4j.version>2.13.3</log4j.version>
+        <log4j.version>2.15.0</log4j.version>
 
         <junit.version>4.12</junit.version>
 
